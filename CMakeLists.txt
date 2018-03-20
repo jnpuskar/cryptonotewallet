@@ -1,8 +1,9 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.9)
 
 include(CryptoNoteWallet.cmake)
 
-project(${CN_PROJECT_NAME})
+project(dcrownwallet)
+set(CMAKE_CXX_STANDARD 14)
 
 execute_process(COMMAND git log -1 --pretty=format:%h
 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
@@ -15,6 +16,19 @@ include_directories(${CMAKE_BINARY_DIR}
     cryptonote/external
     cryptonote/include
     cryptonote/src)
+if(MSVC)
+set(CMAKE_PREFIX_PATH "C:\\Qt\\5.11.0\\msvc2017_64")
+include_directories(SYSTEM $ENV{BOOST_INCLUDEDIR})
+link_directories(SYSTEM $ENV{BOOST_LIBRARYDIR}) # must be before add_executable, add_library
+endif()
+
+if(MSVC)
+set(STATIC ${MSVC} CACHE BOOL "Link libraries statically")
+else()
+set(STATIC "Link boost libraries statically")
+endif()
+
+add_definitions(-DBOOST_CONFIG_SUPPRESS_OUTDATED_MESSAGE=1)
 
 find_package(Qt5Gui REQUIRED)
 find_package(Qt5Widgets REQUIRED)
@@ -25,11 +39,14 @@ if(WIN32)
 else(WIN32)
   set(Boost_USE_STATIC_RUNTIME ON)
 endif(WIN32)
-
+if(WIN32)
+else()
 find_package(Boost 1.66 REQUIRED COMPONENTS date_time filesystem program_options regex serialization system thread chrono)
-
+message(STATUS ${Boost_INCLUDE_DIRS})
+message(STATUS ${Boost_LIBRARY_DIRS})
 include_directories(${Boost_INCLUDE_DIRS})
 link_directories(${Boost_LIBRARY_DIRS})
+endif()
 
 set(VERSION "")
 configure_file("cryptonote/src/version.h.in" "version.h")
