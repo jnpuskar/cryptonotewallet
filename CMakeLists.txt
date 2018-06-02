@@ -263,3 +263,4 @@ elseif (WIN32)
 endif (APPLE)
 
 qt5_use_modules(${PROJECT_NAME} Widgets Gui)
+#target_link_libraries(${PROJECT_NAME} Qt5::Widgets Qt5::Gui)
