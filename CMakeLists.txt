@@ -52,7 +52,7 @@ set(VERSION "")
 configure_file("cryptonote/src/version.h.in" "version.h")
 configure_file("src/CryptoNoteWalletConfig.h.in" "CryptoNoteWalletConfig.h")
 
-add_definitions(-DGIT_REVISION=\"${GIT_REVISION}\")
+add_definitions(-DGIT_REVISION="${GIT_REVISION}")
 
 set(CMAKE_AUTOMOC ON)
 
@@ -180,8 +180,7 @@ set(CRYPTONOTE_SOURCES
   cryptonote/src/Logging/LoggerRef.cpp
   cryptonote/src/BlockchainExplorer/BlockchainExplorer.cpp
   cryptonote/src/BlockchainExplorer/BlockchainExplorerDataBuilder.cpp
-  cryptonote/src/BlockchainExplorer/BlockchainExplorerErrors.cpp
-)
+  cryptonote/src/BlockchainExplorer/BlockchainExplorerErrors.cpp)
 
 file(GLOB_RECURSE SOURCES src/*.cpp)
 file(GLOB_RECURSE HEADERS src/*.h)
@@ -198,6 +197,9 @@ if (WIN32)
 	message(FATAL_ERROR "Only MSVC is supported on this platform")
   endif ()
   add_definitions(/D_CRT_SECURE_NO_WARNINGS /D_WIN32_WINNT=0x0600 /DSTATICLIB)
+#  foreach(VAR CMAKE_C_FLAGS_DEBUG CMAKE_CXX_FLAGS_DEBUG CMAKE_C_FLAGS_RELWITHDEBINFO CMAKE_CXX_FLAGS_RELWITHDEBINFO CMAKE_C_FLAGS_RELEASE CMAKE_CXX_FLAGS_RELEASE)
+#   string(REPLACE "/MD" "/MT" ${VAR} "${${VAR}}")
+#  endforeach()
   include_directories(cryptonote/src/platform/msc)
 
   set(PLATFORM_DIR Windows)
